@@ -1,3 +1,23 @@
+# コレのローカルでの確認方法!
+
+```
+docker run -v "$(pwd)":/opt -w /opt laravelsail/php81-composer:latest bash -c "composer install"
+docker-compose up
+```
+
+別ウィンドウにて
+
+```
+docker-compose exec laravel.test php artisan migrate
+docker-compose exec laravel.test npm install
+docker-compose exec laravel.test npm run dev
+```
+
+http://localhostをアクセスして上の右あたりにjetstreamのユーザ登録とログインができてたら成功!!
+
+
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
