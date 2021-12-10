@@ -13,9 +13,60 @@ docker-compose exec laravel.test npm install
 docker-compose exec laravel.test npm run dev
 ```
 
-http://localhostをアクセスして上の右あたりにjetstreamのユーザ登録とログインができてたら成功!!
+http://localhost をアクセスして上の右あたりにjetstreamのユーザ登録とログインができてたら成功!!
 
 
+# EC2 ubuntu20.04 にdockerをインストールする方法
+
+公式が正義だと思うので、こちらを参考にインストール
+https://docs.docker.com/engine/install/ubuntu/
+
+composeはこちら
+https://docs.docker.com/compose/install/
+
+composeはインスコ後 `sudo chmod +x /usr/local/bin/docker-compose` が必要だった
+
+
+# アプリの配置先
+
+個人的に /app をよく使うので、 /app にアプリを配置する
+
+# EC2 ubuntu20.04(デプロイ先)で初回のみ必要な作業
+
+1. 鍵の作成
+```
+ssh-keygen
+```
+
+2. id_rsa.pubをgithubに登録
+
+3. デプロイ先ディレクトリの作成
+
+```
+sudo mkdir /app
+sudo chown -R ubuntu:ubuntu /app
+```
+
+4. clone
+
+```
+cd /app
+git clone git@github.com:n-taku3/study-jetstream.git .
+```
+
+5. 起動確認
+
+```
+sudo docker run -v "$(pwd)":/opt -w /opt laravelsail/php81-composer:latest bash -c "composer install"
+cp .env.example .env
+vim .env  # DB_HOST=mysqlに書き換える
+export WWWGROUP=1000  # TODO なんかもうちょっといい方法あると思う。。。
+sudo -E docker-compose up -d  # TODO できれば -E オプションを使いたくない…
+sudo docker-compose exec laravel.test php artisan key:generate
+sudo docker-compose exec laravel.test php artisan migrate
+```
+
+http://3.133.59.95 で変更反映できてたらOK!!
 
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
